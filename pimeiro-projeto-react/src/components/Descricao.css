@@ -1,0 +1,10 @@
+.descricao {
+    margin: 20px;
+    border: solid;
+    border-color: red;
+    background-color: coral;
+}
+
+.titulo {
+    margin: 10px;
+}
