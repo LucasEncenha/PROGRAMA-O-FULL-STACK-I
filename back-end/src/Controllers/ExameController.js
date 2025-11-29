@@ -1,7 +1,7 @@
 import ExameModel from "../Models/ExameModel.js";
 
 class ExameController{
-    static async listar(req, res) {
+    static async listar(req, res) { 
         try {
             const {termo} = req.query;
             let exames;

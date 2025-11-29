@@ -41,7 +41,7 @@ class ExameModel {
     }
 
 
-    static async filtrar(termo) {
+    static async filtrar(termo) { 
         const termoBusca = `%${termo}%`;
         const [rows] = await pool.query('SELECT * FROM exames WHERE ex_paciente LIKE ? OR ex_data LIKE ? OR ex_tipo LIKE ? OR ex_status LIKE ? ORDER BY ex_id DESC', [termoBusca, termoBusca, termoBusca, termoBusca]);
 

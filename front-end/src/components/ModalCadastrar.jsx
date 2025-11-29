@@ -65,7 +65,7 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
         setErros({});
         setFormExame({ ex_paciente: '', ex_data: '', ex_tipo: '', ex_status: '' });
         onHide();
-    }
+    } 
 
     return (
         <Modal

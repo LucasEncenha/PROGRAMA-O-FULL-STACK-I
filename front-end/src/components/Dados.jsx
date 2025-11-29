@@ -66,7 +66,7 @@ function Dados({ exames, loading, ExcluirExame, Cadastro }) {
                             Nenhum exame encontrado. Tente limpar os filtros ou cadastre um novo.
                         </Alert>
                     </td>
-                </tr>
+                </tr> 
             );
         }
 

@@ -21,7 +21,7 @@ console.log('DB_PORT:', process.env.DB_PORT);
 
 pool.getConnection().then(connection => {
     console.log('Conexão ok');
-    connection.release();
+    connection.release(); 
 }).catch(err => {
     console.log('Erro ao se conectar ao banco', err);
 });

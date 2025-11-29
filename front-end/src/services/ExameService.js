@@ -14,7 +14,7 @@ class ExameService {
     async buscarPorId(id) {
         const exames = await this.listarTodos();
         return exames.find(v => v.id === id);
-    }
+    } 
 
     async salvar(exame) {
         console.log(exame);
