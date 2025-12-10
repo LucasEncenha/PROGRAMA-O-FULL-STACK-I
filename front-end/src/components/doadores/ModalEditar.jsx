@@ -1,34 +1,34 @@
+import { IMaskInput } from "react-imask";
 import { useState, useEffect } from "react";
-import ExameService from "../services/ExameService.js";
+import DoadorService from "../../services/DoadorService.js";
 import { Modal, Button, Row, Form, Col, Alert } from "react-bootstrap"; 
 
-function ModalEditar({ show, onHide, editandoExame, Cadastro }) {
+function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
     const [mensagem, setMensagem] = useState({tipo: '', texto: ''});    
     const [erros, setErros] = useState({});
     
-    const [formExame, setFormExame] = useState({
-        ex_paciente: '',
-        ex_data: '',
-        ex_tipo: '',
-        ex_status: ''
+    const [formDoador, setFormDoador] = useState({
+        do_nome: '',
+        do_endereco: '',
+        do_telefone :'',
+        do_valor_doado: ''
     });
 
     useEffect(() => {
-        console.log(editandoExame);
-        if (editandoExame) {
-            setFormExame({
-                id: editandoExame.ex_id,
-                ex_paciente: editandoExame.ex_paciente || '',
-                ex_data: editandoExame.ex_data || '',
-                ex_tipo: editandoExame.ex_tipo || '',
-                ex_status: editandoExame.ex_status || ''
+        if (editandoDoador) {
+            setFormDoador({
+                id: editandoDoador.do_id,
+                do_nome: editandoDoador.do_nome,
+                do_endereco: editandoDoador.do_endereco || '',
+                do_telefone: editandoDoador.do_telefone || '',
+                do_valor_doado: editandoDoador.do_valor_doado || '',
             });
         }
-    }, [editandoExame]);
+    }, [editandoDoador]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormExame(prev => ({
+        setFormDoador(prev => ({
             ...prev,
             [name]: value
         }));
@@ -36,10 +36,10 @@ function ModalEditar({ show, onHide, editandoExame, Cadastro }) {
 
     const validarFormulario = () => {
         const novosErros = {};
-        if (!formExame.ex_paciente) novosErros.paciente = 'O nome do paciente é obrigatório.';
-        if (!formExame.ex_data) novosErros.data = 'A data é obrigatória.';
-        if (!formExame.ex_tipo) novosErros.tipo = 'O tipo de exame é obrigatório.';
-        if (!formExame.ex_status) novosErros.status = 'O status é obrigatório.';
+        if (!formDoador.do_nome) novosErros.do_nome = 'O nome do doador é obrigatório.';
+        if (!formDoador.do_endereco) novosErros.do_endereco = 'O endereço do doador é obrigatório.';
+        if (!formDoador.do_telefone) novosErros.do_telefone = 'O telefone do doador é obrigatório.';
+        if (!formDoador.do_valor_doado) novosErros.do_valor_doado = 'O valor doado é obrigatório.';
 
         setErros(novosErros);
         return Object.keys(novosErros).length === 0; 
@@ -55,16 +55,17 @@ function ModalEditar({ show, onHide, editandoExame, Cadastro }) {
         }
 
         try {
-            await ExameService.salvar(formExame);
+            console.log(formDoador)
+            await DoadorService.salvar(formDoador);
             setErros({});
-            setMensagem({ tipo: 'success', texto: 'Exame atualizado com sucesso!' });
+            setMensagem({ tipo: 'success', texto: 'Doador atualizado com sucesso!' });
 
             if (Cadastro) {
                 Cadastro();
             }
             
         } catch (error) {
-            setMensagem({ tipo: 'danger', texto: 'Erro ao salvar exame. Tente novamente.' });
+            setMensagem({ tipo: 'danger', texto: 'Erro ao salvar doador. Tente novamente.' });
         }
     };
 
@@ -85,7 +86,7 @@ function ModalEditar({ show, onHide, editandoExame, Cadastro }) {
             <Form onSubmit={handleSubmit} noValidate>
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter">
-                        EDITAR DE EXAMES
+                        EDITAR DOADOR
                     </Modal.Title>
                 </Modal.Header>
                 
@@ -96,53 +97,59 @@ function ModalEditar({ show, onHide, editandoExame, Cadastro }) {
                         </Alert>
                     )}
                 
-                    {formExame && (
+                    {formDoador && (
                         <Row>
                             <Col md={6} className="mb-3">
-                                <Form.Group controlId="formPaciente">
-                                    <Form.Label>Nome do paciente *</Form.Label>
+                                <Form.Group>
+                                    <Form.Label>Nome do doador *</Form.Label>
                                     <Form.Control
                                         placeholder="Digite aqui..."
-                                        name="ex_paciente" 
-                                        value={formExame.ex_paciente} 
+                                        name="do_nome"
+                                        value={formDoador.do_nome}
                                         onChange={handleChange}
-                                        isInvalid={!!erros.paciente}
+                                        isInvalid={!!erros.do_nome}
                                     />
                                 </Form.Group>
                             </Col>
                             <Col md={6} className="mb-3">
-                                <Form.Group controlId="formData">
-                                    <Form.Label>Data *</Form.Label>
+                                <Form.Group>
+                                    <Form.Label>Endereço *</Form.Label>
                                     <Form.Control
-                                        type="date"
-                                        name="ex_data"
-                                        value={formExame.ex_data}
+                                        placeholder="Digite aqui..."
+                                        name="do_endereco"
+                                        value={formDoador.do_endereco}
                                         onChange={handleChange}
-                                        isInvalid={!!erros.data}
+                                        isInvalid={!!erros.do_endereco}
                                     />
                                 </Form.Group>
                             </Col>
                             <Col md={6} className="mb-3">
-                                <Form.Group controlId="formTipo">
-                                    <Form.Label>Tipo de Exame *</Form.Label>
+                                <Form.Group>
+                                    <Form.Label>Telefone *</Form.Label>
                                     <Form.Control
-                                        placeholder="Ex: Raio-X, Sangue..."
-                                        name="ex_tipo"
-                                        value={formExame.ex_tipo}
+                                        as={IMaskInput}
+                                        mask={[
+                                            { mask: '(00) 0000-0000' },
+                                            { mask: '(00) 00000-0000' }
+                                        ]}
+                                        placeholder="(00) 00000-0000"
+                                        name="do_telefone"
+                                        value={formDoador.do_telefone}
                                         onChange={handleChange}
-                                        isInvalid={!!erros.tipo}
+                                        isInvalid={!!erros.do_telefone}
                                     />
                                 </Form.Group>
                             </Col>
                             <Col md={6} className="mb-3">
-                                <Form.Group controlId="formStatus">
-                                    <Form.Label>Status *</Form.Label>
+                                <Form.Group>
+                                    <Form.Label>Valor Doado *</Form.Label>
                                     <Form.Control
-                                        placeholder="Ex: Pendente, Concluído..."
-                                        name="ex_status"
-                                        value={formExame.ex_status}
+                                        placeholder="Digite aqui..."
+                                        type="number"
+                                        name="do_valor_doado"
+                                        value={formDoador.do_valor_doado}
                                         onChange={handleChange}
-                                        isInvalid={!!erros.status}
+                                        isInvalid={!!erros.do_valor_doado}
                                     />
                                 </Form.Group>
                             </Col>
