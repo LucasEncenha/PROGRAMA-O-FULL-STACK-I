@@ -1,5 +1,5 @@
 import express from 'express';
-import TipoExameController from '../Controllers/TipoExameController.js';
+import TipoExameController from '../controllers/TipoExameController.js';
 
 const router = express.Router();
 

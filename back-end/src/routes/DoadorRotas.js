@@ -1,5 +1,5 @@
 import express from 'express';
-import DoadorController from '../Controllers/DoadorController.js';
+import DoadorController from '../controllers/DoadorController.js';
 
 const router = express.Router();
 

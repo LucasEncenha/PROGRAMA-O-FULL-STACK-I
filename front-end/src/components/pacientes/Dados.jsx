@@ -16,9 +16,8 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
 
     const excluirPaciente = async () => {
         if (!pacienteExcluir) return;
-
         try {
-            await ExcluirPaciente(pacienteExcluir.pa_id); 
+            await ExcluirPaciente(pacienteExcluir.pa_id);
         } catch (error) {
             console.error("Erro ao excluir paciente:", error);
             alert("Não foi possível excluir o paciente.");
@@ -31,9 +30,7 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
     const formatarData = (dataPaciente) => {
         if (!dataPaciente) return '';
         const data = new Date(dataPaciente);
-        return data.toLocaleDateString('pt-BR', {
-            timeZone: 'UTC'
-        });
+        return data.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
     };
 
     const formatarCPF = (cpf) => {
@@ -55,15 +52,15 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
     const atualizar = (dataPaciente) => {
         setEditandoPaciente(dataPaciente);
         setModalShowEditar(true);
-    }
+    };
 
     const handleEditarPaciente = () => {
         setModalShowEditar(false);
         Cadastro();
-    }
+    };
 
     const renderCorpoTabela = () => {
-        if (!pacientes) {
+        if (!pacientes || pacientes.length === 0) {
             return (
                 <tr>
                     <td colSpan="6">
@@ -71,7 +68,7 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
                             Nenhum paciente encontrado. Tente limpar os filtros ou cadastre um novo.
                         </Alert>
                     </td>
-                </tr> 
+                </tr>
             );
         }
 
@@ -79,25 +76,20 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
             <tr key={paciente.pa_id}>
                 <td>{paciente.pa_nome}</td>
                 <td>{formatarCPF(paciente.pa_cpf)}</td>
-                <td>{paciente.pa_data_nascimento}</td>
-                <td>{formatarTelefone(paciente.pa_contato)}</td>
-                <td>{paciente.pa_info_emergencia}</td>
+                <td>{formatarData(paciente.pa_data_nascimento)}</td>
+                <td>{formatarTelefone(paciente.pa_telefone)}</td>
+                <td>{paciente.pa_endereco}</td>
                 <td>
                     <Button variant="warning" onClick={() => atualizar(paciente)}>
-                        <BsPencilSquare/>
+                        <BsPencilSquare />
                     </Button>
-                    <Button 
-                        className="m-1" 
-                        variant="danger"
-                        onClick={() => confirmarExclusao(paciente)}
-                    >
+                    <Button className="m-1" variant="danger" onClick={() => confirmarExclusao(paciente)}>
                         <BsTrash />
                     </Button>
                 </td>
             </tr>
         ));
     };
-
 
     return (
         <>
@@ -107,8 +99,8 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
                         <th>Paciente</th>
                         <th>CPF</th>
                         <th>Data de Nascimento</th>
-                        <th>Contato</th>
-                        <th>Informações Emergência</th>
+                        <th>Telefone</th>
+                        <th>Endereço</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -121,20 +113,18 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
                 <Modal.Header closeButton>
                     <Modal.Title>⚠️ Confirmar Exclusão</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>
                     {pacienteExcluir && (
                         <p>
-                            Tem certeza que deseja excluir o paciente:<br/>
-                            Paciente: <strong>{pacienteExcluir.pa_nome}</strong><br/>
-                            CPF: <strong>{pacienteExcluir.pa_cpf}</strong><br />
-                            Data de Nascimento: <strong>{formatarData(pacienteExcluir.pa_data_nascimento)}</strong><br/>
-                            Contato: <strong>{pacienteExcluir.pa_contato}</strong><br/>
-                            Informações Emergência: <strong>{pacienteExcluir.pa_info_emergencia}</strong>
+                            Tem certeza que deseja excluir o paciente:<br />
+                            Paciente: <strong>{pacienteExcluir.pa_nome}</strong><br />
+                            CPF: <strong>{formatarCPF(pacienteExcluir.pa_cpf)}</strong><br />
+                            Data de Nascimento: <strong>{formatarData(pacienteExcluir.pa_data_nascimento)}</strong><br />
+                            Telefone: <strong>{formatarTelefone(pacienteExcluir.pa_telefone)}</strong><br />
+                            Endereço: <strong>{pacienteExcluir.pa_endereco}</strong>
                         </p>
                     )}
                 </Modal.Body>
-
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
                         Cancelar
@@ -152,7 +142,7 @@ function Dados({ pacientes, ExcluirPaciente, Cadastro }) {
                 Cadastro={handleEditarPaciente}
             />
         </>
-    )
+    );
 }
 
 export default Dados;

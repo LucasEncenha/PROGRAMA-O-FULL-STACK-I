@@ -1,66 +1,51 @@
-import { Container, Row, Col, Nav } from "react-bootstrap";
-import { useState } from "react"; 
+import { AuthProvider } from './context/AuthContext'
+import { BrowserRouter, Navigate, Routes, Route } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import Login from './pages/Login';
+import Home from './pages/home';
 import TelaDoadores from "./components/doadores/Tela.jsx";
 import TelaTipoExame from './components/tipos-exames/Tela.jsx';
 import TelaPaciente from "./components/pacientes/Tela.jsx";
-
+import NavBar from "./components/NavBar.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
-    const [paginaAtual, setPaginaAtual] = useState('pacientes');
-
-    const renderConteudo = () => {
-        if (paginaAtual === 'pacientes') {
-            return <TelaPaciente/>;
-        }
-        if (paginaAtual === 'tipo-exame') {
-            return<TelaTipoExame />;
-        }
-        if (paginaAtual === 'doadores') {
-            return  <TelaDoadores />;
-        }
-        return null;
-    };
-
     return (
-        <Container fluid>
-            <Row>
-                <Col md={3} lg={2} className="bg-primary text-white min-vh-100 p-4">
-                    <h3 className="mb-4">ProntosPvidaSys</h3>
-                    <Nav className="flex-column">
-                        <hr />
-                        <Nav.Link 
-                            onClick={() => setPaginaAtual('pacientes')}
-                            className={`mb-2 rounded ${paginaAtual === 'pacientes' ? 'bg-white text-primary fw-bold' : 'text-white'}`}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            PACIENTES
-                        </Nav.Link>
+        <BrowserRouter>
+            <AuthProvider>
+                <div className="App">
+                    <NavBar />
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
 
-                        <Nav.Link 
-                            onClick={() => setPaginaAtual('tipo-exame')}
-                            className={`mb-2 rounded ${paginaAtual === 'tipo-exame' ? 'bg-white text-primary fw-bold' : 'text-white'}`}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            TIPOS DE EXAME
-                        </Nav.Link>
+                        <Route path="/" element={
+                            <ProtectedRoute>
+                                <Home />
+                            </ProtectedRoute>
+                        } />
 
-                        <Nav.Link 
-                            onClick={() => setPaginaAtual('doadores')}
-                            className={`mb-2 rounded ${paginaAtual === 'doadores' ? 'bg-white text-primary fw-bold' : 'text-white'}`}
-                            style={{ cursor: 'pointer' }}
-                        >
-                            DOADORES
-                        </Nav.Link>
-                    </Nav>
-                </Col>
-                
-                <Col md={9} lg={10} className="p-4">
-                    {renderConteudo()}
-                </Col>
-            </Row>
-        </Container>
+                        <Route path="/pacientes" element={
+                            <ProtectedRoute roles={['admin', 'operador', 'usuario']}>
+                                <TelaPaciente />
+                            </ProtectedRoute>
+                        } />
+
+                        <Route path="/exames" element={
+                            <ProtectedRoute roles={['admin', 'operador']}>
+                                <TelaTipoExame />
+                            </ProtectedRoute>
+                        } />
+
+                        <Route path="/doadores" element={
+                            <ProtectedRoute roles={['admin']}>
+                                <TelaDoadores />
+                            </ProtectedRoute>
+                        } />
+                    </Routes>
+                </div>
+            </AuthProvider>
+        </BrowserRouter>
     );
 }
 

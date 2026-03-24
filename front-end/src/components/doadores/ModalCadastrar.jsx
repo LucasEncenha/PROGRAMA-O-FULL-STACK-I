@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { IMaskInput } from "react-imask";
 import DoadorService from "../../services/DoadorService.js";
-import { Modal, Button, Row, Form, Col, Alert } from "react-bootstrap"; 
+import { Modal, Button, Row, Form, Col, Alert } from "react-bootstrap";
 
 function ModalCadastrar({ show, onHide, Cadastro }) {
-    const [mensagem, setMensagem] = useState({tipo: '', texto: ''});
-    
-    const [formDoador, setFormDoador] = useState({ 
+    const [mensagem, setMensagem] = useState({ tipo: '', texto: '' });
+
+    const [formDoador, setFormDoador] = useState({
         do_nome: '',
-        do_endereco: '',
-        do_telefone :'',
-        do_valor_doado: ''
+        do_email: '',
+        do_telefone: '',
+        do_valor_doado: '',
+        do_data_doacao: ''
     });
 
     const [erros, setErros] = useState({});
@@ -18,25 +19,19 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
     const validarFormulario = () => {
         const novosErros = {};
         if (!formDoador.do_nome) novosErros.do_nome = 'O nome do doador é obrigatório.';
-        if (!formDoador.do_endereco) novosErros.do_endereco = 'O endereço do doador é obrigatório.';
         if (!formDoador.do_telefone) novosErros.do_telefone = 'O telefone do doador é obrigatório.';
         if (!formDoador.do_valor_doado) novosErros.do_valor_doado = 'O valor doado é obrigatório.';
+        if (!formDoador.do_data_doacao) novosErros.do_data_doacao = 'A data da doação é obrigatória.';
 
         setErros(novosErros);
-        return Object.keys(novosErros).length === 0; 
+        return Object.keys(novosErros).length === 0;
     };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormDoador(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+        setFormDoador(prevState => ({ ...prevState, [name]: value }));
         if (erros[name]) {
-            setErros(prevErros => ({
-                ...prevErros,
-                [name]: null
-            }));
+            setErros(prevErros => ({ ...prevErros, [name]: null }));
         }
     };
 
@@ -49,12 +44,10 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
         }
         try {
             await DoadorService.salvar(formDoador);
-            setFormDoador({ do_nome: '', do_endereco: '', do_telefone: '', do_valor_doado: '' });
+            setFormDoador({ do_nome: '', do_email: '', do_telefone: '', do_valor_doado: '', do_data_doacao: '' });
             setErros({});
             setMensagem({ tipo: 'success', texto: 'Doador cadastrado com sucesso!' });
-            if (Cadastro) {
-                Cadastro();
-            }
+            if (Cadastro) Cadastro();
         } catch (error) {
             setMensagem({ tipo: 'danger', texto: 'Erro ao salvar doador. Tente novamente.' });
         }
@@ -63,32 +56,22 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
     const handleClose = () => {
         setMensagem({ tipo: '', texto: '' });
         setErros({});
-        setFormDoador({ do_nome: '', do_endereco: '', do_telefone: '', do_valor_doado: '' });
+        setFormDoador({ do_nome: '', do_email: '', do_telefone: '', do_valor_doado: '', do_data_doacao: '' });
         onHide();
-    } 
+    };
 
     return (
-        <Modal
-            show={show} 
-            onHide={handleClose}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
+        <Modal show={show} onHide={handleClose} size="lg" centered>
             <Form onSubmit={handleSubmit} noValidate>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                        CADASTRO DE DOADORES
-                    </Modal.Title>
+                    <Modal.Title>CADASTRO DE DOADORES</Modal.Title>
                 </Modal.Header>
-                
+
                 <Modal.Body>
                     {mensagem.texto && (
-                        <Alert variant={mensagem.tipo}>
-                            {mensagem.texto}
-                        </Alert>
+                        <Alert variant={mensagem.tipo}>{mensagem.texto}</Alert>
                     )}
-                
+
                     <Row>
                         <Col md={6} className="mb-3">
                             <Form.Group>
@@ -100,20 +83,25 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
                                     onChange={handleChange}
                                     isInvalid={!!erros.do_nome}
                                 />
+                                <Form.Control.Feedback type="invalid">{erros.do_nome}</Form.Control.Feedback>
                             </Form.Group>
                         </Col>
+
                         <Col md={6} className="mb-3">
                             <Form.Group>
-                                <Form.Label>Endereço *</Form.Label>
+                                <Form.Label>E-mail</Form.Label>
                                 <Form.Control
-                                    placeholder="Digite aqui..."
-                                    name="do_endereco"
-                                    value={formDoador.do_endereco}
+                                    type="email"
+                                    placeholder="email@exemplo.com"
+                                    name="do_email"
+                                    value={formDoador.do_email}
                                     onChange={handleChange}
-                                    isInvalid={!!erros.do_endereco}
+                                    isInvalid={!!erros.do_email}
                                 />
+                                <Form.Control.Feedback type="invalid">{erros.do_email}</Form.Control.Feedback>
                             </Form.Group>
                         </Col>
+
                         <Col md={6} className="mb-3">
                             <Form.Group>
                                 <Form.Label>Telefone *</Form.Label>
@@ -129,24 +117,42 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
                                     onChange={handleChange}
                                     isInvalid={!!erros.do_telefone}
                                 />
+                                <Form.Control.Feedback type="invalid">{erros.do_telefone}</Form.Control.Feedback>
                             </Form.Group>
                         </Col>
+
                         <Col md={6} className="mb-3">
                             <Form.Group>
                                 <Form.Label>Valor Doado *</Form.Label>
                                 <Form.Control
-                                    placeholder="Digite aqui..."
+                                    placeholder="0.00"
                                     type="number"
+                                    step="0.01"
                                     name="do_valor_doado"
                                     value={formDoador.do_valor_doado}
                                     onChange={handleChange}
                                     isInvalid={!!erros.do_valor_doado}
                                 />
+                                <Form.Control.Feedback type="invalid">{erros.do_valor_doado}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>Data da Doação *</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    name="do_data_doacao"
+                                    value={formDoador.do_data_doacao}
+                                    onChange={handleChange}
+                                    isInvalid={!!erros.do_data_doacao}
+                                />
+                                <Form.Control.Feedback type="invalid">{erros.do_data_doacao}</Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                     </Row>
                 </Modal.Body>
-                
+
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>FECHAR</Button>
                     <Button type="submit" variant="success">CADASTRAR</Button>

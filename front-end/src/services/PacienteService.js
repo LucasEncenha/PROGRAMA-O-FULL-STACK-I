@@ -2,6 +2,19 @@ import ApiService from "./ApiService.js";
 
 class PacienteService {
 
+    converterData(data) {
+        if (!data) return data;
+        if (data.includes('T')) {
+            return data.split('T')[0];
+        }
+        if (data.includes('/')) {
+            const [dia, mes, ano] = data.split('/');
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        return data;
+    }
+
     async listarTodos() {
         try {
             return await ApiService.get('/pacientes');
@@ -13,16 +26,20 @@ class PacienteService {
 
     async buscarPorId(id) {
         const pacientes = await this.listarTodos();
-        return pacientes.find(v => v.id === id);
-    } 
+        return pacientes.find(v => v.pa_id === id);
+    }
 
     async salvar(paciente) {
-        console.log(paciente);
-        if (paciente.pa_id) {
-            return await ApiService.put(`/pacientes/${paciente.pa_id}`, paciente);
+        const dados = {
+            ...paciente,
+            pa_data_nascimento: this.converterData(paciente.pa_data_nascimento)
+        };
+
+        if (dados.pa_id) {
+            return await ApiService.put(`/pacientes/${dados.pa_id}`, dados);
         } else {
-           return await ApiService.post('/pacientes', paciente);
-        }    
+            return await ApiService.post('/pacientes', dados);
+        }
     }
 
     async excluir(id) {
@@ -31,15 +48,15 @@ class PacienteService {
             return true;
         } catch (error) {
             console.error('Erro ao excluir paciente:', error);
-            return [];
+            return false;
         }
     }
 
     async filtrar(termo) {
         try {
-            return await ApiService.get(`/pacientes?termo=${termo}`);
+            return await ApiService.get(`/pacientes?termo=${encodeURIComponent(termo)}`);
         } catch (error) {
-            console.error('Erro ao listar pacientes:', error);
+            console.error('Erro ao filtrar pacientes:', error);
             return [];
         }
     }

@@ -13,16 +13,15 @@ class DoadorService {
 
     async buscarPorId(id) {
         const doadores = await this.listarTodos();
-        return doadores.find(v => v.id === id);
-    } 
+        return doadores.find(v => v.do_id === id);
+    }
 
     async salvar(doador) {
-        console.log(doador);
-        if (doador.id) {
-            return await ApiService.put(`/doadores/${doador.id}`, doador);
+        if (doador.do_id) {
+            return await ApiService.put(`/doadores/${doador.do_id}`, doador);
         } else {
-           return await ApiService.post('/doadores', doador);
-        }    
+            return await ApiService.post('/doadores', doador);
+        }
     }
 
     async excluir(id) {
@@ -30,16 +29,16 @@ class DoadorService {
             await ApiService.delete(`/doadores/${id}`);
             return true;
         } catch (error) {
-            console.error('Erro ao excluir doadores:', error);
-            return [];
+            console.error('Erro ao excluir doador:', error);
+            return false;
         }
     }
 
     async filtrar(termo) {
         try {
-            return await ApiService.get(`/doadores?termo=${termo}`);
+            return await ApiService.get(`/doadores?termo=${encodeURIComponent(termo)}`);
         } catch (error) {
-            console.error('Erro ao listar doadores:', error);
+            console.error('Erro ao filtrar doadores:', error);
             return [];
         }
     }

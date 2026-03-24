@@ -58,6 +58,27 @@ class ApiService {
             throw error;
         }
     }
+
+    async login(email, password) {
+        return this.request('/auth', {
+            method: 'POST',
+            body: JSON.stringify({ email, password }),
+            credentials: 'include' // Para cookies
+        })
+    }
+
+    async logout() {
+        return this.request('/auth/logout', {
+            method: 'POST',
+            credentials: 'include'
+        })
+    }
+
+     async checkAuth() {
+        return this.request('/auth/me', {
+            credentials: 'include'
+        })
+    }
 }
 
 export default ApiService;

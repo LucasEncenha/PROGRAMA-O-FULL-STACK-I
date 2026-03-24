@@ -1,71 +1,72 @@
-import { IMaskInput } from "react-imask";
 import { useState, useEffect } from "react";
+import { IMaskInput } from "react-imask";
 import DoadorService from "../../services/DoadorService.js";
-import { Modal, Button, Row, Form, Col, Alert } from "react-bootstrap"; 
+import { Modal, Button, Row, Form, Col, Alert } from "react-bootstrap";
 
 function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
-    const [mensagem, setMensagem] = useState({tipo: '', texto: ''});    
-    const [erros, setErros] = useState({});
-    
+    const [mensagem, setMensagem] = useState({ tipo: '', texto: '' });
+
     const [formDoador, setFormDoador] = useState({
         do_nome: '',
-        do_endereco: '',
-        do_telefone :'',
-        do_valor_doado: ''
+        do_email: '',
+        do_telefone: '',
+        do_valor_doado: '',
+        do_data_doacao: ''
     });
+
+    const [erros, setErros] = useState({});
 
     useEffect(() => {
         if (editandoDoador) {
             setFormDoador({
-                id: editandoDoador.do_id,
-                do_nome: editandoDoador.do_nome,
-                do_endereco: editandoDoador.do_endereco || '',
+                do_id: editandoDoador.do_id,
+                do_nome: editandoDoador.do_nome || '',
+                do_email: editandoDoador.do_email || '',
                 do_telefone: editandoDoador.do_telefone || '',
                 do_valor_doado: editandoDoador.do_valor_doado || '',
+                do_data_doacao: editandoDoador.do_data_doacao
+                    ? editandoDoador.do_data_doacao.substring(0, 10)
+                    : ''
             });
+            setErros({});
+            setMensagem({ tipo: '', texto: '' });
         }
     }, [editandoDoador]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormDoador(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
 
     const validarFormulario = () => {
         const novosErros = {};
         if (!formDoador.do_nome) novosErros.do_nome = 'O nome do doador é obrigatório.';
-        if (!formDoador.do_endereco) novosErros.do_endereco = 'O endereço do doador é obrigatório.';
         if (!formDoador.do_telefone) novosErros.do_telefone = 'O telefone do doador é obrigatório.';
         if (!formDoador.do_valor_doado) novosErros.do_valor_doado = 'O valor doado é obrigatório.';
+        if (!formDoador.do_data_doacao) novosErros.do_data_doacao = 'A data da doação é obrigatória.';
 
         setErros(novosErros);
-        return Object.keys(novosErros).length === 0; 
+        return Object.keys(novosErros).length === 0;
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormDoador(prevState => ({ ...prevState, [name]: value }));
+        if (erros[name]) {
+            setErros(prevErros => ({ ...prevErros, [name]: null }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMensagem({ tipo: '', texto: '' });
-        
         if (!validarFormulario()) {
             setMensagem({ tipo: 'danger', texto: 'Há campos que não foram preenchidos.' });
             return;
         }
-
         try {
-            console.log(formDoador)
             await DoadorService.salvar(formDoador);
-            setErros({});
             setMensagem({ tipo: 'success', texto: 'Doador atualizado com sucesso!' });
-
-            if (Cadastro) {
-                Cadastro();
-            }
-            
+            setTimeout(() => {
+                if (Cadastro) Cadastro();
+            }, 1500);
         } catch (error) {
-            setMensagem({ tipo: 'danger', texto: 'Erro ao salvar doador. Tente novamente.' });
+            setMensagem({ tipo: 'danger', texto: 'Erro ao atualizar doador. Tente novamente.' });
         }
     };
 
@@ -73,93 +74,104 @@ function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
         setMensagem({ tipo: '', texto: '' });
         setErros({});
         onHide();
-    }
+    };
 
     return (
-        <Modal
-            show={show} 
-            onHide={handleClose}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-        >
+        <Modal show={show} onHide={handleClose} size="lg" centered>
             <Form onSubmit={handleSubmit} noValidate>
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
-                        EDITAR DOADOR
-                    </Modal.Title>
+                    <Modal.Title>EDITAR DOADOR</Modal.Title>
                 </Modal.Header>
-                
+
                 <Modal.Body>
                     {mensagem.texto && (
-                        <Alert variant={mensagem.tipo}>
-                            {mensagem.texto}
-                        </Alert>
+                        <Alert variant={mensagem.tipo}>{mensagem.texto}</Alert>
                     )}
-                
-                    {formDoador && (
-                        <Row>
-                            <Col md={6} className="mb-3">
-                                <Form.Group>
-                                    <Form.Label>Nome do doador *</Form.Label>
-                                    <Form.Control
-                                        placeholder="Digite aqui..."
-                                        name="do_nome"
-                                        value={formDoador.do_nome}
-                                        onChange={handleChange}
-                                        isInvalid={!!erros.do_nome}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6} className="mb-3">
-                                <Form.Group>
-                                    <Form.Label>Endereço *</Form.Label>
-                                    <Form.Control
-                                        placeholder="Digite aqui..."
-                                        name="do_endereco"
-                                        value={formDoador.do_endereco}
-                                        onChange={handleChange}
-                                        isInvalid={!!erros.do_endereco}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6} className="mb-3">
-                                <Form.Group>
-                                    <Form.Label>Telefone *</Form.Label>
-                                    <Form.Control
-                                        as={IMaskInput}
-                                        mask={[
-                                            { mask: '(00) 0000-0000' },
-                                            { mask: '(00) 00000-0000' }
-                                        ]}
-                                        placeholder="(00) 00000-0000"
-                                        name="do_telefone"
-                                        value={formDoador.do_telefone}
-                                        onChange={handleChange}
-                                        isInvalid={!!erros.do_telefone}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6} className="mb-3">
-                                <Form.Group>
-                                    <Form.Label>Valor Doado *</Form.Label>
-                                    <Form.Control
-                                        placeholder="Digite aqui..."
-                                        type="number"
-                                        name="do_valor_doado"
-                                        value={formDoador.do_valor_doado}
-                                        onChange={handleChange}
-                                        isInvalid={!!erros.do_valor_doado}
-                                    />
-                                </Form.Group>
-                            </Col>
-                        </Row>
-                    )}
+
+                    <Row>
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>Nome do doador *</Form.Label>
+                                <Form.Control
+                                    placeholder="Digite aqui..."
+                                    name="do_nome"
+                                    value={formDoador.do_nome}
+                                    onChange={handleChange}
+                                    isInvalid={!!erros.do_nome}
+                                />
+                                <Form.Control.Feedback type="invalid">{erros.do_nome}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>E-mail</Form.Label>
+                                <Form.Control
+                                    type="email"
+                                    placeholder="email@exemplo.com"
+                                    name="do_email"
+                                    value={formDoador.do_email}
+                                    onChange={handleChange}
+                                    isInvalid={!!erros.do_email}
+                                />
+                                <Form.Control.Feedback type="invalid">{erros.do_email}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>Telefone *</Form.Label>
+                                <Form.Control
+                                    as={IMaskInput}
+                                    mask={[
+                                        { mask: '(00) 0000-0000' },
+                                        { mask: '(00) 00000-0000' }
+                                    ]}
+                                    placeholder="(00) 00000-0000"
+                                    name="do_telefone"
+                                    value={formDoador.do_telefone}
+                                    onChange={handleChange}
+                                    isInvalid={!!erros.do_telefone}
+                                />
+                                <Form.Control.Feedback type="invalid">{erros.do_telefone}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>Valor Doado *</Form.Label>
+                                <Form.Control
+                                    placeholder="0.00"
+                                    type="number"
+                                    step="0.01"
+                                    name="do_valor_doado"
+                                    value={formDoador.do_valor_doado}
+                                    onChange={handleChange}
+                                    isInvalid={!!erros.do_valor_doado}
+                                />
+                                <Form.Control.Feedback type="invalid">{erros.do_valor_doado}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>Data da Doação *</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    name="do_data_doacao"
+                                    value={formDoador.do_data_doacao}
+                                    onChange={handleChange}
+                                    isInvalid={!!erros.do_data_doacao}
+                                />
+                                <Form.Control.Feedback type="invalid">{erros.do_data_doacao}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+                    </Row>
                 </Modal.Body>
-                
+
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>FECHAR</Button>
-                    <Button type="submit" variant="success">EDITAR</Button>
+                    <Button type="submit" variant="success">SALVAR</Button>
                 </Modal.Footer>
             </Form>
         </Modal>

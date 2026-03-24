@@ -16,9 +16,8 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
 
     const excluirTipoExame = async () => {
         if (!tipoExameExcluir) return;
-
         try {
-            await ExcluirTipoExame(tipoExameExcluir.te_id); 
+            await ExcluirTipoExame(tipoExameExcluir.te_id);
         } catch (error) {
             console.error("Erro ao excluir tipo de exame:", error);
             alert("Não foi possível excluir o tipo de exame.");
@@ -31,36 +30,38 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
     const atualizar = (dataTipoExame) => {
         setEditandoTipoExame(dataTipoExame);
         setModalShowEditar(true);
-    }
+    };
 
     const handleEditarTipoExame = () => {
         setModalShowEditar(false);
         Cadastro();
-    }
+    };
+
+    const formatarStatus = (status) => (status == '1' ? 'Ativo' : 'Inativo');
 
     const renderCorpoTabela = () => {
-        if (!tiposExames) {
+        if (!tiposExames || tiposExames.length === 0) {
             return (
                 <tr>
-                    <td colSpan="6">
+                    <td colSpan="3">
                         <Alert variant="info" className="m-0">
                             Nenhum tipo de exame encontrado. Tente limpar os filtros ou cadastre um novo.
                         </Alert>
                     </td>
-                </tr> 
+                </tr>
             );
         }
 
         return tiposExames.map(tipoExame => (
             <tr key={tipoExame.te_id}>
                 <td>{tipoExame.te_nome}</td>
-                <td>{tipoExame.te_status == '1' ? 'Ativo' : 'Inativo'}</td>
+                <td>{formatarStatus(tipoExame.te_status)}</td>
                 <td>
                     <Button variant="warning" onClick={() => atualizar(tipoExame)}>
-                        <BsPencilSquare/>
+                        <BsPencilSquare />
                     </Button>
-                    <Button 
-                        className="m-1" 
+                    <Button
+                        className="m-1"
                         variant="danger"
                         onClick={() => confirmarExclusao(tipoExame)}
                     >
@@ -71,7 +72,6 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
         ));
     };
 
-
     return (
         <>
             <Table responsive="lg" striped bordered hover>
@@ -79,6 +79,7 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
                     <tr>
                         <th>Tipo</th>
                         <th>Status</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,24 +91,18 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
                 <Modal.Header closeButton>
                     <Modal.Title>⚠️ Confirmar Exclusão</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>
                     {tipoExameExcluir && (
                         <p>
-                            Tem certeza que deseja excluir o tipo de exame:<br/>
-                            Tipo: <strong>{tipoExameExcluir.te_nome}</strong><br/>
-                            Status: <strong>{tipoExameExcluir.te_status}</strong><br />
+                            Tem certeza que deseja excluir o tipo de exame:<br />
+                            Tipo: <strong>{tipoExameExcluir.te_nome}</strong><br />
+                            Status: <strong>{formatarStatus(tipoExameExcluir.te_status)}</strong>
                         </p>
                     )}
                 </Modal.Body>
-
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Cancelar
-                    </Button>
-                    <Button variant="danger" onClick={excluirTipoExame}>
-                        Confirmar Exclusão
-                    </Button>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+                    <Button variant="danger" onClick={excluirTipoExame}>Confirmar Exclusão</Button>
                 </Modal.Footer>
             </Modal>
 
@@ -118,7 +113,7 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
                 Cadastro={handleEditarTipoExame}
             />
         </>
-    )
+    );
 }
 
 export default Dados;

@@ -13,16 +13,15 @@ class TipoExameService {
 
     async buscarPorId(id) {
         const tiposExames = await this.listarTodos();
-        return tiposExames.find(v => v.id === id);
-    } 
+        return tiposExames.find(v => v.te_id === id);
+    }
 
-    async salvar(tiposExames) {
-        console.log(tiposExames);
-        if (tiposExames.id) {
-            return await ApiService.put(`/tipoExame/${tiposExames.id}`, tiposExames);
+    async salvar(tipoExame) {
+        if (tipoExame.te_id) {
+            return await ApiService.put(`/tipoExame/${tipoExame.te_id}`, tipoExame);
         } else {
-           return await ApiService.post('/tipoExame', tiposExames);
-        }    
+            return await ApiService.post('/tipoExame', tipoExame);
+        }
     }
 
     async excluir(id) {
@@ -31,16 +30,15 @@ class TipoExameService {
             return true;
         } catch (error) {
             console.error('Erro ao excluir tipo de exame:', error);
-            return [];
+            return false;
         }
     }
 
-    async filtrar(termo) {
+    async filtrar(filtro) {
         try {
-            const filtro = JSON.stringify(termo);
-            return await ApiService.get(`/tipoExame?termo=${filtro}`);
+            return await ApiService.get(`/tipoExame?termo=${encodeURIComponent(JSON.stringify(filtro))}`);
         } catch (error) {
-            console.error('Erro ao listar tipos de exames:', error);
+            console.error('Erro ao filtrar tipos de exames:', error);
             return [];
         }
     }

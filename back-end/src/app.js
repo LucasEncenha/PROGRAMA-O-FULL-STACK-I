@@ -1,19 +1,26 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import PacientesRotas from './routes/PacienteRotas.js';
 import TipoExameRotas from './routes/TipoExameRotas.js';
 import DoadorRotas from './routes/DoadorRotas.js';
+import AuthRotas  from './routes/AuthRotas.js';
 
 dotenv.config();
 const PORT = process.env.PORT;
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: ["http://127.0.0.1:5173", "http://localhost:5173"],
+    credentials: true
+}));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+app.use('/auth',AuthRotas)
 app.use('/api', PacientesRotas);
 app.use('/api', TipoExameRotas);
 app.use('/api', DoadorRotas);
