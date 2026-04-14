@@ -3,12 +3,11 @@ import TipoExameModel from "../Models/TipoExameModel.js";
 class TipoExameController {
     static async listar(req, res) {
         try {
-            const { termo } = req.query;
+            const { nome, status } = req.query;
             let tiposExames;
 
-            if (termo) {
-                const filtro = JSON.parse(decodeURIComponent(termo));
-                tiposExames = await TipoExameModel.filtrar(filtro);
+            if (nome || status) {
+                tiposExames = await TipoExameModel.filtrar({ nome, status });
             } else {
                 tiposExames = await TipoExameModel.listarTiposExames();
             }
@@ -23,13 +22,13 @@ class TipoExameController {
 
     static async criar(req, res) {
         try {
-            const { te_nome } = req.body;
+            const { te_nome, te_descricao, te_status } = req.body;
 
             if (!te_nome) {
                 return res.status(400).json({ error: 'O nome do tipo de exame é obrigatório.' });
             }
 
-            const tipoExame = await TipoExameModel.criar({ te_nome });
+            const tipoExame = await TipoExameModel.criar({ te_nome, te_descricao, te_status });
             res.status(201).json(tipoExame);
 
         } catch (error) {
@@ -41,13 +40,13 @@ class TipoExameController {
     static async atualizar(req, res) {
         try {
             const { id } = req.params;
-            const { te_nome, te_status } = req.body;
+            const { te_nome, te_descricao, te_status } = req.body;
 
             if (!te_nome) {
                 return res.status(400).json({ error: 'O nome do tipo de exame é obrigatório.' });
             }
 
-            const tipoExame = await TipoExameModel.atualizar(id, { te_nome, te_status });
+            const tipoExame = await TipoExameModel.atualizar(id, { te_nome, te_descricao, te_status });
 
             if (!tipoExame) {
                 return res.status(404).json({ error: 'Tipo de exame não encontrado' });

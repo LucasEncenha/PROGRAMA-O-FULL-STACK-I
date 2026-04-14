@@ -108,6 +108,99 @@ class AuthController {
         }
     }
 
+    static async alterarSenha(req, res) {
+        try {
+            const { senhaAtual, novaSenha } = req.body;
+
+            if (!senhaAtual || !novaSenha) {
+                return res.status(400).json({ erro: 'Preencha todos os campos.' });
+            }
+
+            if (novaSenha.length < 6) {
+                return res.status(400).json({ erro: 'A nova senha deve ter no mínimo 6 caracteres.' });
+            }
+
+            const [usuarios] = await pool.query(
+                'SELECT * FROM usuarios WHERE usu_id = ? AND usu_senha = ?',
+                [req.user.sub, senhaAtual]
+            );
+
+            if (usuarios.length === 0) {
+                return res.status(401).json({ erro: 'Senha atual incorreta.' });
+            }
+
+            await pool.query(
+                'UPDATE usuarios SET usu_senha = ? WHERE usu_id = ?',
+                [novaSenha, req.user.sub]
+            );
+
+            return res.json({ mensagem: 'Senha alterada com sucesso!' });
+
+        } catch (error) {
+            console.error("Erro ao alterar senha: ", error);
+            res.status(500).json({ erro: 'Erro interno ao alterar senha.' });
+        }
+    }
+
+    static async verificarEmail(req, res) {
+        try {
+            const { email } = req.body;
+
+            if (!email) {
+                return res.status(400).json({ erro: 'Informe o e-mail.' });
+            }
+
+            const [usuarios] = await pool.query(
+                'SELECT usu_id FROM usuarios WHERE usu_email = ?',
+                [email]
+            );
+
+            if (usuarios.length === 0) {
+                return res.status(404).json({ erro: 'E-mail não encontrado.' });
+            }
+
+            return res.json({ mensagem: 'E-mail encontrado.' });
+
+        } catch (error) {
+            console.error("Erro ao verificar e-mail: ", error);
+            res.status(500).json({ erro: 'Erro interno.' });
+        }
+    }
+
+    static async redefinirSenha(req, res) {
+        try {
+            const { email, novaSenha } = req.body;
+
+            if (!email || !novaSenha) {
+                return res.status(400).json({ erro: 'Preencha todos os campos.' });
+            }
+
+            if (novaSenha.length < 6) {
+                return res.status(400).json({ erro: 'A senha deve ter no mínimo 6 caracteres.' });
+            }
+
+            const [usuarios] = await pool.query(
+                'SELECT usu_id FROM usuarios WHERE usu_email = ?',
+                [email]
+            );
+
+            if (usuarios.length === 0) {
+                return res.status(404).json({ erro: 'E-mail não encontrado.' });
+            }
+
+            await pool.query(
+                'UPDATE usuarios SET usu_senha = ? WHERE usu_email = ?',
+                [novaSenha, email]
+            );
+
+            return res.json({ mensagem: 'Senha redefinida com sucesso!' });
+
+        } catch (error) {
+            console.error("Erro ao redefinir senha: ", error);
+            res.status(500).json({ erro: 'Erro interno ao redefinir senha.' });
+        }
+    }
+
     static async logout(req, res) {
         try {
             res.clearCookie('auth_token');

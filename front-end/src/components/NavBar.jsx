@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // ← corrigido
+import { useAuth } from '../context/AuthContext';
 
 const NavBar = () => {
     const { usuario, logout } = useAuth();
@@ -23,6 +23,7 @@ const NavBar = () => {
                             <Link className="nav-link" to="/pacientes">Paciente</Link>
                             <Link className="nav-link" to="/exames">Exame</Link>
                             <Link className="nav-link" to="/doadores">Doadores</Link>
+                            <Link className="nav-link" to="/perfil">Meu Perfil</Link>
                         </div>
 
                         <div className="navbar-nav">

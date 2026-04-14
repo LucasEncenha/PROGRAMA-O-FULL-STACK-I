@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container, Card, Form, Button, Alert } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // <-- Importe o Link aqui
 
 export default function Login() {
     const { login } = useAuth();
@@ -48,7 +48,7 @@ export default function Login() {
                             />
                         </Form.Group>
 
-                        <Form.Group className="mb-4" controlId="formSenha">
+                        <Form.Group className="mb-3" controlId="formSenha">
                             <Form.Label>Senha</Form.Label>
                             <Form.Control 
                                 type="password" 
@@ -57,12 +57,21 @@ export default function Login() {
                                 onChange={(e) => setSenha(e.target.value)}
                                 required
                             />
+                            <div className="text-end mt-2">
+                                <Link 
+                                    to="/recuperar-senha" 
+                                    className="text-decoration-none text-secondary" 
+                                    style={{ fontSize: "0.85rem" }}
+                                >
+                                    Esqueci minha senha
+                                </Link>
+                            </div>
                         </Form.Group>
 
                         <Button 
                             variant="primary" 
                             type="submit" 
-                            className="w-100 py-2 fs-5"
+                            className="w-100 py-2 fs-5 mt-2"
                             disabled={carregando}
                         >
                             {carregando ? 'Entrando...' : 'Entrar'}

@@ -33,8 +33,17 @@ export function AuthProvider({children}) {
         }
     }
 
+    async function alterarSenha(senhaAtual, novaSenha) {
+        try {
+            await axios.put('http://localhost:3000/auth/alterar-senha', {senhaAtual, novaSenha}, {withCredentials: true});
+        } catch (error) {
+            console.error("Erro ao alterar senha:", error);
+            throw error;
+        }
+    }
+
     return (
-        <AuthContext.Provider value={{ usuario, carregando, login, logout, registrar }}>
+        <AuthContext.Provider value={{ usuario, carregando, login, logout, registrar, alterarSenha }}>
             {children}
         </AuthContext.Provider>
     );

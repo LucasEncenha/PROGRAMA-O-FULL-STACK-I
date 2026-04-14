@@ -1,6 +1,6 @@
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import express from 'express';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import PacientesRotas from './routes/PacienteRotas.js';
@@ -20,7 +20,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-app.use('/auth',AuthRotas)
+app.use('/auth', AuthRotas);
 app.use('/api', PacientesRotas);
 app.use('/api', TipoExameRotas);
 app.use('/api', DoadorRotas);

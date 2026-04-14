@@ -8,12 +8,13 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
 
     const [formTipoExame, setFormTipoExame] = useState({
         te_nome: '',
+        te_descricao: '',
         te_status: '1'
     });
 
     const validarFormulario = () => {
         const novosErros = {};
-        if (!formTipoExame.te_nome) novosErros.tipoExame = 'O nome do tipo de exame é obrigatório.';
+        if (!formTipoExame.te_nome) novosErros.te_nome = 'O nome do tipo de exame é obrigatório.';
         setErros(novosErros);
         return Object.keys(novosErros).length === 0;
     };
@@ -31,13 +32,13 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
         setMensagem({ tipo: '', texto: '' });
 
         if (!validarFormulario()) {
-            setMensagem({ tipo: 'danger', texto: 'Há campos que não foram preenchidos.' });
+            setMensagem({ tipo: 'danger', texto: 'Preencha todos os campos obrigatórios.' });
             return;
         }
 
         try {
             await TipoExameService.salvar(formTipoExame);
-            setFormTipoExame({ te_nome: '', te_status: '1' });
+            setFormTipoExame({ te_nome: '', te_descricao: '', te_status: '1' });
             setErros({});
             setMensagem({ tipo: 'success', texto: 'Tipo de exame cadastrado com sucesso!' });
             if (Cadastro) Cadastro();
@@ -49,7 +50,7 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
     const handleClose = () => {
         setMensagem({ tipo: '', texto: '' });
         setErros({});
-        setFormTipoExame({ te_nome: '', te_status: '1' });
+        setFormTipoExame({ te_nome: '', te_descricao: '', te_status: '1' });
         onHide();
     };
 
@@ -68,21 +69,21 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
                     <Row>
                         <Col md={6} className="mb-3">
                             <Form.Group>
-                                <Form.Label>Tipo de Exame *</Form.Label>
+                                <Form.Label>Nome do Tipo de Exame *</Form.Label>
                                 <Form.Control
-                                    placeholder="Digite aqui..."
+                                    placeholder="Ex: Hemograma Completo"
                                     name="te_nome"
                                     value={formTipoExame.te_nome}
                                     onChange={handleChange}
-                                    isInvalid={!!erros.tipoExame}
+                                    isInvalid={!!erros.te_nome}
                                 />
-                                <Form.Control.Feedback type="invalid">{erros.tipoExame}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{erros.te_nome}</Form.Control.Feedback>
                             </Form.Group>
                         </Col>
 
                         <Col md={6} className="mb-3">
                             <Form.Group>
-                                <Form.Label>Status *</Form.Label>
+                                <Form.Label>Status</Form.Label>
                                 <Form.Select
                                     name="te_status"
                                     value={formTipoExame.te_status}
@@ -91,6 +92,20 @@ function ModalCadastrar({ show, onHide, Cadastro }) {
                                     <option value="1">Ativo</option>
                                     <option value="0">Inativo</option>
                                 </Form.Select>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={12} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>Descrição</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={2}
+                                    placeholder="Descreva o tipo de exame..."
+                                    name="te_descricao"
+                                    value={formTipoExame.te_descricao}
+                                    onChange={handleChange}
+                                />
                             </Form.Group>
                         </Col>
                     </Row>

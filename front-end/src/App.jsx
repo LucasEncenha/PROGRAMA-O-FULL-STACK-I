@@ -9,6 +9,8 @@ import TelaTipoExame from './components/tipos-exames/Tela.jsx';
 import TelaPaciente from "./components/pacientes/Tela.jsx";
 import NavBar from "./components/NavBar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Perfil from "./components/Perfil.jsx";
+import RecuperarSenha from "./components/RecuperarSenha.jsx";
 
 function App() {
     return (
@@ -18,6 +20,8 @@ function App() {
                     <NavBar />
                     <Routes>
                         <Route path="/login" element={<Login />} />
+                        <Route path="/recuperar-senha" element={<RecuperarSenha />} />
+
 
                         <Route path="/" element={
                             <ProtectedRoute>
@@ -42,6 +46,13 @@ function App() {
                                 <TelaDoadores />
                             </ProtectedRoute>
                         } />
+
+                        <Route path="/perfil" element={
+                            <ProtectedRoute>
+                                <Perfil />
+                            </ProtectedRoute>
+                        } />
+
                     </Routes>
                 </div>
             </AuthProvider>

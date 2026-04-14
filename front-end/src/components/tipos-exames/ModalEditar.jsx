@@ -7,8 +7,10 @@ function ModalEditar({ show, onHide, editandoTipoExame, Cadastro }) {
     const [erros, setErros] = useState({});
 
     const [formTipoExame, setFormTipoExame] = useState({
+        te_id: '',
         te_nome: '',
-        te_status: ''
+        te_descricao: '',
+        te_status: '1'
     });
 
     useEffect(() => {
@@ -16,7 +18,8 @@ function ModalEditar({ show, onHide, editandoTipoExame, Cadastro }) {
             setFormTipoExame({
                 te_id: editandoTipoExame.te_id,
                 te_nome: editandoTipoExame.te_nome || '',
-                te_status: editandoTipoExame.te_status ?? '',
+                te_descricao: editandoTipoExame.te_descricao || '',
+                te_status: editandoTipoExame.te_status ?? '1',
             });
             setErros({});
             setMensagem({ tipo: '', texto: '' });
@@ -33,7 +36,7 @@ function ModalEditar({ show, onHide, editandoTipoExame, Cadastro }) {
 
     const validarFormulario = () => {
         const novosErros = {};
-        if (!formTipoExame.te_nome) novosErros.tipoExame = 'O tipo de exame é obrigatório.';
+        if (!formTipoExame.te_nome) novosErros.te_nome = 'O tipo de exame é obrigatório.';
         setErros(novosErros);
         return Object.keys(novosErros).length === 0;
     };
@@ -43,7 +46,7 @@ function ModalEditar({ show, onHide, editandoTipoExame, Cadastro }) {
         setMensagem({ tipo: '', texto: '' });
 
         if (!validarFormulario()) {
-            setMensagem({ tipo: 'danger', texto: 'Há campos que não foram preenchidos.' });
+            setMensagem({ tipo: 'danger', texto: 'Preencha todos os campos obrigatórios.' });
             return;
         }
 
@@ -80,32 +83,43 @@ function ModalEditar({ show, onHide, editandoTipoExame, Cadastro }) {
                     <Row>
                         <Col md={6} className="mb-3">
                             <Form.Group>
-                                <Form.Label>Tipo de Exame *</Form.Label>
+                                <Form.Label>Nome do Tipo de Exame *</Form.Label>
                                 <Form.Control
-                                    placeholder="Digite aqui..."
+                                    placeholder="Ex: Hemograma Completo"
                                     name="te_nome"
                                     value={formTipoExame.te_nome}
                                     onChange={handleChange}
-                                    isInvalid={!!erros.tipoExame}
+                                    isInvalid={!!erros.te_nome}
                                 />
-                                <Form.Control.Feedback type="invalid">{erros.tipoExame}</Form.Control.Feedback>
+                                <Form.Control.Feedback type="invalid">{erros.te_nome}</Form.Control.Feedback>
                             </Form.Group>
                         </Col>
 
                         <Col md={6} className="mb-3">
                             <Form.Group>
-                                <Form.Label>Status *</Form.Label>
+                                <Form.Label>Status</Form.Label>
                                 <Form.Select
                                     name="te_status"
                                     value={formTipoExame.te_status}
                                     onChange={handleChange}
-                                    isInvalid={!!erros.te_status}
                                 >
-                                    <option value="">Selecione uma opção...</option>
                                     <option value="1">Ativo</option>
                                     <option value="0">Inativo</option>
                                 </Form.Select>
-                                <Form.Control.Feedback type="invalid">{erros.te_status}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={12} className="mb-3">
+                            <Form.Group>
+                                <Form.Label>Descrição</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={2}
+                                    placeholder="Descreva o tipo de exame..."
+                                    name="te_descricao"
+                                    value={formTipoExame.te_descricao}
+                                    onChange={handleChange}
+                                />
                             </Form.Group>
                         </Col>
                     </Row>

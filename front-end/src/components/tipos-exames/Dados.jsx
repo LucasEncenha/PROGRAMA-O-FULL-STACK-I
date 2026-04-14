@@ -1,4 +1,4 @@
-import { Table, Modal, Button, Alert } from "react-bootstrap";
+import { Table, Modal, Button, Alert, Badge } from "react-bootstrap";
 import { BsPencilSquare, BsTrash } from "react-icons/bs";
 import { useState } from "react";
 import ModalEditar from "./ModalEditar.jsx";
@@ -37,15 +37,19 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
         Cadastro();
     };
 
-    const formatarStatus = (status) => (status == '1' ? 'Ativo' : 'Inativo');
+    const renderStatus = (status) => (
+        <Badge bg={status == 1 ? 'success' : 'secondary'}>
+            {status == 1 ? 'Ativo' : 'Inativo'}
+        </Badge>
+    );
 
     const renderCorpoTabela = () => {
         if (!tiposExames || tiposExames.length === 0) {
             return (
                 <tr>
-                    <td colSpan="3">
+                    <td colSpan="4">
                         <Alert variant="info" className="m-0">
-                            Nenhum tipo de exame encontrado. Tente limpar os filtros ou cadastre um novo.
+                            Nenhum tipo de exame encontrado. Cadastre um novo.
                         </Alert>
                     </td>
                 </tr>
@@ -54,17 +58,14 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
 
         return tiposExames.map(tipoExame => (
             <tr key={tipoExame.te_id}>
-                <td>{tipoExame.te_nome}</td>
-                <td>{formatarStatus(tipoExame.te_status)}</td>
-                <td>
-                    <Button variant="warning" onClick={() => atualizar(tipoExame)}>
+                <td className="fw-semibold">{tipoExame.te_nome}</td>
+                <td className="text-muted">{tipoExame.te_descricao || '—'}</td>
+                <td>{renderStatus(tipoExame.te_status)}</td>
+                <td style={{ width: '120px' }}>
+                    <Button size="sm" variant="warning" className="me-1" onClick={() => atualizar(tipoExame)}>
                         <BsPencilSquare />
                     </Button>
-                    <Button
-                        className="m-1"
-                        variant="danger"
-                        onClick={() => confirmarExclusao(tipoExame)}
-                    >
+                    <Button size="sm" variant="danger" onClick={() => confirmarExclusao(tipoExame)}>
                         <BsTrash />
                     </Button>
                 </td>
@@ -74,12 +75,13 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
 
     return (
         <>
-            <Table responsive="lg" striped bordered hover>
-                <thead>
+            <Table responsive="lg" hover className="mb-0">
+                <thead style={{ background: '#f8f9fa', borderBottom: '2px solid #dee2e6' }}>
                     <tr>
-                        <th>Tipo</th>
-                        <th>Status</th>
-                        <th>Ações</th>
+                        <th style={{ fontWeight: 600, color: '#495057' }}>Nome</th>
+                        <th style={{ fontWeight: 600, color: '#495057' }}>Descrição</th>
+                        <th style={{ fontWeight: 600, color: '#495057' }}>Status</th>
+                        <th style={{ fontWeight: 600, color: '#495057' }}>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,9 +96,10 @@ function Dados({ tiposExames, ExcluirTipoExame, Cadastro }) {
                 <Modal.Body>
                     {tipoExameExcluir && (
                         <p>
-                            Tem certeza que deseja excluir o tipo de exame:<br />
-                            Tipo: <strong>{tipoExameExcluir.te_nome}</strong><br />
-                            Status: <strong>{formatarStatus(tipoExameExcluir.te_status)}</strong>
+                            Tem certeza que deseja excluir:<br />
+                            Nome: <strong>{tipoExameExcluir.te_nome}</strong><br />
+                            Descrição: <strong>{tipoExameExcluir.te_descricao || '—'}</strong><br />
+                            Status: <strong>{tipoExameExcluir.te_status == 1 ? 'Ativo' : 'Inativo'}</strong>
                         </p>
                     )}
                 </Modal.Body>

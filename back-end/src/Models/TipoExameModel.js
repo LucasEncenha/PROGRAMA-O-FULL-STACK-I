@@ -7,14 +7,14 @@ class TipoExameModel {
     }
 
     static async criar(tipoExame) {
-        const { te_nome, te_descricao } = tipoExame;
+        const { te_nome, te_descricao, te_status = 1 } = tipoExame;
 
         const [result] = await pool.query(
-            'INSERT INTO tipos_exames (te_nome, te_descricao) VALUES (?,?)',
-            [te_nome, te_descricao]
+            'INSERT INTO tipos_exames (te_nome, te_descricao, te_status) VALUES (?,?,?)',
+            [te_nome, te_descricao, te_status]
         );
 
-        return { te_id: result.insertId, te_nome, te_descricao };
+        return { te_id: result.insertId, te_nome, te_descricao, te_status };
     }
 
     static async atualizar(id, tipoExame) {

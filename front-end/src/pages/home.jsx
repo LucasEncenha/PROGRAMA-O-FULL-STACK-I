@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
-import { Container, Row, Col, Card, Badge, Button } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import DoadorService from "../services/DoadorService.js";
 import PacienteService from "../services/PacienteService.js";
 import TipoExameService from "../services/TipoExameService.js";
@@ -42,8 +42,6 @@ export default function Home() {
         return 'Boa noite';
     };
 
-    const primeiroNome = usuario.nome?.split(' ')[0] ?? 'usuário';
-    console.log(usuario)
 
     const atalhos = [
         {
@@ -83,11 +81,8 @@ export default function Home() {
             <div className="d-flex justify-content-between align-items-center mb-5">
                 <div>
                     <p className="text-muted mb-0 fs-5">{saudacao()},</p>
-                    <h1 className="fw-bold mb-0">{primeiroNome}.</h1>
+                    <h1 className="fw-bold mb-0">{usuario.nome}.</h1>
                 </div>
-                <Badge bg="primary" className="fs-6 px-3 py-2">
-                    {usuario?.usu_nivel ?? 'Usuário'}
-                </Badge>
             </div>
 
             <Row className="mb-5 g-3">
