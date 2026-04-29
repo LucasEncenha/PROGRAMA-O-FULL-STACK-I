@@ -21,17 +21,30 @@ const NavBar = () => {
                     <>
                         <div className="navbar-nav me-auto">
                             <Link className="nav-link" to="/pacientes">Paciente</Link>
-                            <Link className="nav-link" to="/exames">Exame</Link>
-                            <Link className="nav-link" to="/doadores">Doadores</Link>
-                            <Link className="nav-link" to="/perfil">Meu Perfil</Link>
+                            <Link className="nav-link" to="/exames">Exames</Link>
+                            <Link className="nav-link" to="/doacoes">Doações</Link>
+                        </div>
+
+                        <div className="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                            <ul className="navbar-nav">
+                                <li className="nav-item dropdown">
+                                    <a className="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Menu
+                                    </a>
+                                    <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                        <Link className="nav-link" to="/tipo-exames">Tipo-Exames</Link>
+                                        <Link className="nav-link" to="/doadores">Doadores</Link>
+                                    </ul>
+                                </li>
+                            </ul>
                         </div>
 
                         <div className="navbar-nav">
                             <span className="navbar-text me-3">
-                                Olá, {usuario.nome} ({usuario.nivel})
+                                <Link className="nav-link" to="/perfil">Olá, {usuario.nome} ({usuario.nivel})</Link>
                             </span>
                             <button
-                                className="btn btn-outline-light btn-sm"
+                                className="btn btn-outline-light btn-sm mb-3  mt-3"
                                 onClick={handleLogout}
                             >
                                 Sair

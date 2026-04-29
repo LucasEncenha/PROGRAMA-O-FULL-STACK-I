@@ -1,28 +1,28 @@
 import { Button, Form, InputGroup, Container, Badge } from "react-bootstrap";
-import { BsSearch, BsPersonPlusFill, BsXCircle } from "react-icons/bs";
+import { BsSearch, BsXCircle, BsCashStack } from "react-icons/bs";
 import { useState, useEffect } from "react";
 
 import Dados from './Dados.jsx';
 import ModalCadastrar from './ModalCadastrar.jsx';
-import DoadorService from '../../services/DoadorService.js';
+import DoacaoService from '../../services/DoacaoService.js';
 
-function TelaDoadores() {
+function TelaDoacoes() {
     const [modalShow, setModalShow] = useState(false);
-    const [doadores, setDoadores] = useState([]);
+    const [doacoes, setDoacoes] = useState([]);
     const [filtro, setFiltro] = useState('');
     const [carregando, setCarregando] = useState(true);
 
     useEffect(() => {
-        carregarDoadores();
+        carregarDoacoes();
     }, []);
 
-    const carregarDoadores = async () => {
+    const carregarDoacoes = async () => {
         setCarregando(true);
         try {
-            const dados = await DoadorService.listarTodos();
-            setDoadores(dados);
+            const dados = await DoacaoService.listarTodos();
+            setDoacoes(dados);
         } catch (error) {
-            console.error('Erro ao carregar:', error);
+            console.error('Erro ao carregar doações:', error);
         } finally {
             setCarregando(false);
         }
@@ -31,10 +31,12 @@ function TelaDoadores() {
     const handleBuscar = async () => {
         setCarregando(true);
         try {
-            const dados = filtro ? await DoadorService.filtrar(filtro) : await DoadorService.listarTodos();
-            setDoadores(dados);
+            const dados = filtro
+                ? await DoacaoService.filtrar(filtro)
+                : await DoacaoService.listarTodos();
+            setDoacoes(dados);
         } catch (error) {
-            setDoadores([]);
+            setDoacoes([]);
         } finally {
             setCarregando(false);
         }
@@ -42,34 +44,39 @@ function TelaDoadores() {
 
     const handleLimpar = () => {
         setFiltro('');
-        carregarDoadores();
+        carregarDoacoes();
     };
 
     const handleAposCadastro = () => {
         setModalShow(false);
-        carregarDoadores();
+        carregarDoacoes();
     };
 
     const handleExcluir = async (id) => {
         try {
-            await DoadorService.excluir(id);
-            await carregarDoadores();
+            await DoacaoService.excluir(id);
+            await carregarDoacoes();
         } catch (error) {
             alert("Erro ao excluir.");
         }
     };
 
-    const totalDoado = doadores.reduce((acc, d) => acc + Number(d.do_valor_doado || 0), 0);
+    const totalArrecadado = doacoes.reduce((acc, d) => acc + Number(d.doa_valor || 0), 0);
 
     return (
         <Container fluid className="py-4 px-4">
             <div className="d-flex align-items-center justify-content-between mb-4">
                 <div>
-                    <h2 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>Doadores</h2>
+                    <h2 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>Doações</h2>
                     <span className="text-muted" style={{ fontSize: '0.9rem' }}>
                         {carregando ? 'Carregando...' : (
                             <>
-                                <Badge bg="success" className="me-1">{doadores.length}</Badge> doadores
+                                <Badge bg="success" className="me-1">{doacoes.length}</Badge> registros
+                                {doacoes.length > 0 && (
+                                    <span className="ms-2">
+                                        · Total: <strong>{totalArrecadado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong>
+                                    </span>
+                                )}
                             </>
                         )}
                     </span>
@@ -80,8 +87,8 @@ function TelaDoadores() {
                     className="d-flex align-items-center gap-2"
                     style={{ borderRadius: '8px', padding: '10px 20px' }}
                 >
-                    <BsPersonPlusFill />
-                    Novo Doador
+                    <BsCashStack />
+                    Nova Doação
                 </Button>
             </div>
 
@@ -91,7 +98,7 @@ function TelaDoadores() {
                         <BsSearch className="text-muted" />
                     </InputGroup.Text>
                     <Form.Control
-                        placeholder="Buscar por nome, e-mail ou telefone..."
+                        placeholder="Buscar por doador, e-mail ou observação..."
                         value={filtro}
                         onChange={(e) => setFiltro(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleBuscar()}
@@ -112,12 +119,12 @@ function TelaDoadores() {
                 {carregando ? (
                     <div className="text-center py-5 text-muted">
                         <div className="spinner-border spinner-border-sm me-2" role="status" />
-                        Carregando doadores...
+                        Carregando doações...
                     </div>
                 ) : (
                     <Dados
-                        doadores={doadores}
-                        ExcluirDoador={handleExcluir}
+                        doacoes={doacoes}
+                        ExcluirDoacao={handleExcluir}
                         Cadastro={handleAposCadastro}
                     />
                 )}
@@ -132,4 +139,4 @@ function TelaDoadores() {
     );
 }
 
-export default TelaDoadores;
+export default TelaDoacoes;

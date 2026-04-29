@@ -60,7 +60,8 @@ function Dados({ doadores, ExcluirDoador, Cadastro }) {
                 <td>{doador.do_nome}</td>
                 <td>{doador.do_email}</td>
                 <td>{doador.do_telefone}</td>
-                <td>{formatarValor(doador.do_valor_doado)}</td>
+                <td>{doador.do_endereco}</td>
+
                 <td>
                     <Button variant="warning" onClick={() => atualizar(doador)}>
                         <BsPencilSquare />
@@ -81,7 +82,7 @@ function Dados({ doadores, ExcluirDoador, Cadastro }) {
                         <th>Nome</th>
                         <th>E-mail</th>
                         <th>Telefone</th>
-                        <th>Valor Doado</th>
+                        <th>Endereço</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -101,7 +102,7 @@ function Dados({ doadores, ExcluirDoador, Cadastro }) {
                             Nome: <strong>{doadorExcluir.do_nome}</strong><br />
                             E-mail: <strong>{doadorExcluir.do_email}</strong><br />
                             Telefone: <strong>{doadorExcluir.do_telefone}</strong><br />
-                            Valor doado: <strong>{formatarValor(doadorExcluir.do_valor_doado)}</strong>
+                            Endereço: <strong>{doadorExcluir.do_endereco}</strong><br />
                         </p>
                     )}
                 </Modal.Body>

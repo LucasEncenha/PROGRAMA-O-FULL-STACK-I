@@ -7,6 +7,8 @@ import PacientesRotas from './routes/PacienteRotas.js';
 import TipoExameRotas from './routes/TipoExameRotas.js';
 import DoadorRotas from './routes/DoadorRotas.js';
 import AuthRotas  from './routes/AuthRotas.js';
+import ExameRotas from './routes/ExameRotas.js';
+import DoacaoRotas from './routes/DoacaoRotas.js';
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -24,6 +26,8 @@ app.use('/auth', AuthRotas);
 app.use('/api', PacientesRotas);
 app.use('/api', TipoExameRotas);
 app.use('/api', DoadorRotas);
+app.use('/api', ExameRotas);
+app.use('/api', DoacaoRotas);
 
 app.get('/',(req,res) => {
     res.json({message: 'API pacientes está rodando'})

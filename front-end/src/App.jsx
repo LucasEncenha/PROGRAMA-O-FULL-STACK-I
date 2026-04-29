@@ -7,6 +7,10 @@ import Home from './pages/home';
 import TelaDoadores from "./components/doadores/Tela.jsx";
 import TelaTipoExame from './components/tipos-exames/Tela.jsx';
 import TelaPaciente from "./components/pacientes/Tela.jsx";
+import TelaExames from "./components/exames/Tela.jsx";
+import TelaDoacoes from "./components/doacoes/Tela.jsx";
+
+
 import NavBar from "./components/NavBar.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Perfil from "./components/Perfil.jsx";
@@ -22,7 +26,6 @@ function App() {
                         <Route path="/login" element={<Login />} />
                         <Route path="/recuperar-senha" element={<RecuperarSenha />} />
 
-
                         <Route path="/" element={
                             <ProtectedRoute>
                                 <Home />
@@ -35,7 +38,7 @@ function App() {
                             </ProtectedRoute>
                         } />
 
-                        <Route path="/exames" element={
+                        <Route path="/tipo-exames" element={
                             <ProtectedRoute roles={['admin', 'operador']}>
                                 <TelaTipoExame />
                             </ProtectedRoute>
@@ -47,9 +50,21 @@ function App() {
                             </ProtectedRoute>
                         } />
 
+                        <Route path="/exames" element={
+                            <ProtectedRoute>
+                                <TelaExames />
+                            </ProtectedRoute>
+                        } />
+
                         <Route path="/perfil" element={
                             <ProtectedRoute>
                                 <Perfil />
+                            </ProtectedRoute>
+                        } />
+
+                        <Route path="/doacoes" element={
+                            <ProtectedRoute>
+                                <TelaDoacoes />
                             </ProtectedRoute>
                         } />
 

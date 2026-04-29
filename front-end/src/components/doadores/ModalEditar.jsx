@@ -10,8 +10,7 @@ function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
         do_nome: '',
         do_email: '',
         do_telefone: '',
-        do_valor_doado: '',
-        do_data_doacao: ''
+        do_endereco: '',
     });
 
     const [erros, setErros] = useState({});
@@ -23,10 +22,7 @@ function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
                 do_nome: editandoDoador.do_nome || '',
                 do_email: editandoDoador.do_email || '',
                 do_telefone: editandoDoador.do_telefone || '',
-                do_valor_doado: editandoDoador.do_valor_doado || '',
-                do_data_doacao: editandoDoador.do_data_doacao
-                    ? editandoDoador.do_data_doacao.substring(0, 10)
-                    : ''
+                do_endereco: editandoDoador.do_endereco || '',
             });
             setErros({});
             setMensagem({ tipo: '', texto: '' });
@@ -37,8 +33,8 @@ function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
         const novosErros = {};
         if (!formDoador.do_nome) novosErros.do_nome = 'O nome do doador é obrigatório.';
         if (!formDoador.do_telefone) novosErros.do_telefone = 'O telefone do doador é obrigatório.';
-        if (!formDoador.do_valor_doado) novosErros.do_valor_doado = 'O valor doado é obrigatório.';
-        if (!formDoador.do_data_doacao) novosErros.do_data_doacao = 'A data da doação é obrigatória.';
+        if (!formDoador.do_endereco) novosErros.do_endereco = 'O endereço do doador é obrigatório.';
+        if (!formDoador.do_email) novosErros.do_email = 'O e-mail do doador é obrigatório.';
 
         setErros(novosErros);
         return Object.keys(novosErros).length === 0;
@@ -120,6 +116,21 @@ function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
 
                         <Col md={6} className="mb-3">
                             <Form.Group>
+                                <Form.Label>Endereço</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Digite o endereço..."
+                                    name="do_endereco"
+                                    value={formDoador.do_endereco}
+                                    onChange={handleChange}
+                                    isInvalid={!!erros.do_endereco}
+                                />
+                                <Form.Control.Feedback type="invalid">{erros.do_endereco}</Form.Control.Feedback>
+                            </Form.Group>
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                            <Form.Group>
                                 <Form.Label>Telefone *</Form.Label>
                                 <Form.Control
                                     as={IMaskInput}
@@ -134,36 +145,6 @@ function ModalEditar({ show, onHide, editandoDoador, Cadastro }) {
                                     isInvalid={!!erros.do_telefone}
                                 />
                                 <Form.Control.Feedback type="invalid">{erros.do_telefone}</Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-
-                        <Col md={6} className="mb-3">
-                            <Form.Group>
-                                <Form.Label>Valor Doado *</Form.Label>
-                                <Form.Control
-                                    placeholder="0.00"
-                                    type="number"
-                                    step="0.01"
-                                    name="do_valor_doado"
-                                    value={formDoador.do_valor_doado}
-                                    onChange={handleChange}
-                                    isInvalid={!!erros.do_valor_doado}
-                                />
-                                <Form.Control.Feedback type="invalid">{erros.do_valor_doado}</Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-
-                        <Col md={6} className="mb-3">
-                            <Form.Group>
-                                <Form.Label>Data da Doação *</Form.Label>
-                                <Form.Control
-                                    type="date"
-                                    name="do_data_doacao"
-                                    value={formDoador.do_data_doacao}
-                                    onChange={handleChange}
-                                    isInvalid={!!erros.do_data_doacao}
-                                />
-                                <Form.Control.Feedback type="invalid">{erros.do_data_doacao}</Form.Control.Feedback>
                             </Form.Group>
                         </Col>
                     </Row>

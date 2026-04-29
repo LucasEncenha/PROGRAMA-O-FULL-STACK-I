@@ -22,13 +22,13 @@ class DoadorController {
 
     static async criar(req, res) {
         try {
-            const { do_nome, do_email, do_telefone, do_valor_doado, do_data_doacao } = req.body;
+            const { do_nome, do_email, do_telefone, do_endereco } = req.body;
 
-            if (!do_nome || !do_telefone || !do_valor_doado || !do_data_doacao) {
+            if (!do_nome || !do_telefone || !do_email || !do_endereco) {
                 return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
             }
 
-            const doador = await DoadorModel.criar({ do_nome, do_email, do_telefone, do_valor_doado, do_data_doacao });
+            const doador = await DoadorModel.criar({ do_nome, do_email, do_telefone, do_endereco });
             res.status(201).json(doador);
 
         } catch (error) {
@@ -40,13 +40,13 @@ class DoadorController {
     static async atualizar(req, res) {
         try {
             const { id } = req.params;
-            const { do_nome, do_email, do_telefone, do_valor_doado, do_data_doacao } = req.body;
+            const { do_nome, do_email, do_telefone, do_endereco } = req.body;
 
-            if (!do_nome || !do_telefone || !do_valor_doado || !do_data_doacao) {
+            if (!do_nome || !do_telefone || !do_email || !do_endereco) {
                 return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
             }
 
-            const doador = await DoadorModel.atualizar(id, { do_nome, do_email, do_telefone, do_valor_doado, do_data_doacao });
+            const doador = await DoadorModel.atualizar(id, { do_nome, do_email, do_telefone, do_endereco });
 
             if (!doador) {
                 return res.status(404).json({ error: 'Doador não encontrado' });
