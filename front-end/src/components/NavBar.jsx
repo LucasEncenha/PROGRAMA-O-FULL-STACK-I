@@ -23,6 +23,7 @@ const NavBar = () => {
                             <Link className="nav-link" to="/pacientes">Paciente</Link>
                             <Link className="nav-link" to="/exames">Exames</Link>
                             <Link className="nav-link" to="/doacoes">Doações</Link>
+                            <Link className="nav-link" to="/consultas">Consultas</Link>
                         </div>
 
                         <div className="collapse navbar-collapse" id="navbarNavDarkDropdown">
@@ -34,6 +35,8 @@ const NavBar = () => {
                                     <ul className="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                                         <Link className="nav-link" to="/tipo-exames">Tipo-Exames</Link>
                                         <Link className="nav-link" to="/doadores">Doadores</Link>
+                                        <Link className="nav-link" to="/medicos">Médicos</Link>
+                                        <Link className="nav-link" to="/resultados">Resultados de Exames</Link>
                                     </ul>
                                 </li>
                             </ul>

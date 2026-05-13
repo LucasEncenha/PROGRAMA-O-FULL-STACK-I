@@ -1,4 +1,7 @@
 const API_URL = 'http://localhost:3000/api';
+const DEFAULT_OPTIONS = {
+    credentials: 'include'
+};
 
 class ApiService {
     static async handleResponse(response) {

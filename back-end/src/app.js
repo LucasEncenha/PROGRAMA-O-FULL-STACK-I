@@ -9,6 +9,9 @@ import DoadorRotas from './routes/DoadorRotas.js';
 import AuthRotas  from './routes/AuthRotas.js';
 import ExameRotas from './routes/ExameRotas.js';
 import DoacaoRotas from './routes/DoacaoRotas.js';
+import MedicoRotas from './routes/MedicoRotas.js';
+import ConsultaRotas from './routes/ConsultaRotas.js';
+import ResultadoExameRotas from './routes/ResultadoExameRotas.js';
 
 dotenv.config();
 const PORT = process.env.PORT;
@@ -22,12 +25,17 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+app.use('/uploads', express.static('uploads'));
+
 app.use('/auth', AuthRotas);
 app.use('/api', PacientesRotas);
 app.use('/api', TipoExameRotas);
 app.use('/api', DoadorRotas);
 app.use('/api', ExameRotas);
 app.use('/api', DoacaoRotas);
+app.use('/api', MedicoRotas);
+app.use('/api', ConsultaRotas);
+app.use('/api', ResultadoExameRotas);
 
 app.get('/',(req,res) => {
     res.json({message: 'API pacientes está rodando'})

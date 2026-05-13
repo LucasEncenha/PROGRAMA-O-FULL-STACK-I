@@ -9,6 +9,9 @@ import TelaTipoExame from './components/tipos-exames/Tela.jsx';
 import TelaPaciente from "./components/pacientes/Tela.jsx";
 import TelaExames from "./components/exames/Tela.jsx";
 import TelaDoacoes from "./components/doacoes/Tela.jsx";
+import TelaMedicos from "./components/medicos/Tela.jsx";
+import TelaConsultas from "./components/consultas/Tela.jsx";
+import TelaResultados from "./components/resultados/Tela.jsx";
 
 
 import NavBar from "./components/NavBar.jsx";
@@ -65,6 +68,22 @@ function App() {
                         <Route path="/doacoes" element={
                             <ProtectedRoute>
                                 <TelaDoacoes />
+                            </ProtectedRoute>
+                        } />
+
+                        <Route path="/medicos" element={
+                            <ProtectedRoute>
+                                <TelaMedicos />
+                            </ProtectedRoute>
+                        } />
+                        <Route path="/consultas" element={
+                            <ProtectedRoute>
+                                <TelaConsultas />
+                            </ProtectedRoute>
+                        } />
+                        <Route path="/resultados" element={
+                            <ProtectedRoute>
+                                <TelaResultados />
                             </ProtectedRoute>
                         } />
 
